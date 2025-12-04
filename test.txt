@@ -1,0 +1,13 @@
+Implementing DevOps solutions Test #2
+
+A few months ago, you were hired by Wild Rydes to develop a highly scalable, highly redundant website hosted on AWS. After testing your deployment, the CTO has decided to bring you back in to help convert their entire infrastructure stack into Infrastructure as Code (IaC).
+
+As Wild Rydes is an AWS native organization, they’ve requested you develop the entire IaC script using AWS CloudFormation. They have provided a description of their infrastructure below.
+
+Note: it is not a requirement to deploy your scripts to an AWS account however you may wish to do so when testing your solution.
+
+Wild Rydes currently makes use of ECS to run their monolithic application. The application is containerized using docker and runs on ECS Fargate. The ECS service is scalable based on load and runs in two separate subnets behind an application load balancer.
+
+The application is updated via a CI/CD CodePipeline that pulls from a GitHub repository, builds, and pushes the image based on the docker file, and updates the ECS service with the new image. Wild Rydes has alarms set at each stage of the pipeline to determine build failures or an overall successful deployment.
+
+Using the above documentation, determine what resources need to be deployed and create a CloudFormation script that will deploy them.

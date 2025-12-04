@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wild Rydes - Ride Sharing Service</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            font-size: 48px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            color: #666;
+            font-size: 18px;
+        }
+        
+        .status-box {
+            background: #f0f4ff;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #4caf50;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .status-text {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .rides-section {
+            margin-top: 30px;
+        }
+        
+        .rides-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .rides-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .ride-card {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .ride-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .ride-destination {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .ride-driver {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .ride-fare {
+            font-size: 20px;
+            font-weight: bold;
+            color: #667eea;
+            margin-top: 15px;
+        }
+        
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.2s;
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        .button:hover {
+            transform: scale(1.02);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #999;
+            font-size: 12px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        
+        .error {
+            background: #fee;
+            border: 1px solid #f00;
+            color: #c00;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🚗 Wild Rydes</div>
+            <div class="tagline">Premium Ride Sharing Service</div>
+        </div>
+        
+        <div class="status-box">
+            <span class="status-indicator"></span>
+            <span class="status-text">System Operational</span>
+        </div>
+        
+        <div class="rides-section">
+            <div class="rides-title">Available Rides</div>
+            <div class="rides-grid" id="ridesContainer">
+                <p>Loading rides...</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Wild Rydes © 2024 | Powered by AWS ECS Fargate</p>
+            <p id="version">Version 1.0.0</p>
+        </div>
+    </div>
+    
+    <script>
+        // Fetch and display available rides
+        async function loadRides() {
+            try {
+                const response = await fetch('/api/rides');
+                const rides = await response.json();
+                
+                const container = document.getElementById('ridesContainer');
+                container.innerHTML = '';
+                
+                if (rides.length === 0) {
+                    container.innerHTML = '<p>No rides available at the moment</p>';
+                    return;
+                }
+                
+                rides.forEach(ride => {
+                    const card = document.createElement('div');
+                    card.className = 'ride-card';
+                    card.innerHTML = `
+                        <div class="ride-destination">${ride.destination}</div>
+                        <div class="ride-driver">Driver: ${ride.driver}</div>
+                        <div class="ride-fare">$${ride.fare.toFixed(2)}</div>
+                        <button class="button">Book Now</button>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error loading rides:', error);
+                document.getElementById('ridesContainer').innerHTML = 
+                    '<div class="error">Failed to load rides. Please try again.</div>';
+            }
+        }
+        
+        // Fetch version info
+        async function loadVersion() {
+            try {
+                const response = await fetch('/api/status');
+                const status = await response.json();
+                document.getElementById('version').textContent = `Version ${status.version}`;
+            } catch (error) {
+                console.error('Error loading version:', error);
+            }
+        }
+        
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadRides();
+            loadVersion();
+        });
+    </script>
+</body>
+</html>
