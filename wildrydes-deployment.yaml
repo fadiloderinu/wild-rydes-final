@@ -394,32 +394,6 @@ Resources:
         ScaleOutCooldown: 60
         ScaleInCooldown: 300
 
-  # ECR Repository
-  ECRRepository:
-    Type: AWS::ECR::Repository
-    Properties:
-      RepositoryName: wildrydes
-      ImageScanningConfiguration:
-        ScanOnPush: true
-      LifecyclePolicy:
-        LifecyclePolicyText: |
-          {
-            "rules": [
-              {
-                "rulePriority": 1,
-                "description": "Keep last 10 images",
-                "selection": {
-                  "tagStatus": "any",
-                  "countType": "imageCountMoreThan",
-                  "countNumber": 10
-                },
-                "action": {
-                  "type": "expire"
-                }
-              }
-            ]
-          }
-
   # CodePipeline IAM Role
   CodePipelineRole:
     Type: AWS::IAM::Role
@@ -467,7 +441,7 @@ Resources:
           - Name: AWS_DEFAULT_REGION
             Value: !Ref AWS::Region
           - Name: IMAGE_REPO_NAME
-            Value: !Ref ECRRepository
+            Value: 'wild-rydes-web'
           - Name: IMAGE_TAG
             Value: latest
       Source:
@@ -663,12 +637,6 @@ Outputs:
     Value: !GetAtt ECSService.Name
     Export:
       Name: !Sub '${AWS::StackName}-Service'
-
-  ECRRepositoryUri:
-    Description: ECR repository URI
-    Value: !GetAtt ECRRepository.RepositoryUri
-    Export:
-      Name: !Sub '${AWS::StackName}-ECR-URI'
 
   CodePipelineName:
     Description: Name of the CodePipeline
