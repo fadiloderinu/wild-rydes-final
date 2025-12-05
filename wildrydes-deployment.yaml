@@ -480,19 +480,22 @@ Resources:
                 - echo Repository URI is $REPOSITORY_URI
                 - echo Image TAG is $IMAGE_TAG
                 - ls -la
+                - pwd
+                - cat Dockerfile
             build:
               commands:
                 - echo Build started on `date`
                 - echo Building the Docker image...
-                - docker build -t $REPOSITORY_URI:$IMAGE_TAG .
+                - docker build -t $REPOSITORY_URI:$IMAGE_TAG . 2>&1
                 - docker tag $REPOSITORY_URI:$IMAGE_TAG $REPOSITORY_URI:latest
                 - echo Docker build completed successfully
             post_build:
               commands:
                 - echo Build completed on `date`
                 - echo Pushing the Docker images...
-                - docker push $REPOSITORY_URI:$IMAGE_TAG
-                - docker push $REPOSITORY_URI:latest
+                - docker images
+                - docker push $REPOSITORY_URI:$IMAGE_TAG 2>&1
+                - docker push $REPOSITORY_URI:latest 2>&1
                 - echo Writing image definitions file...
                 - printf '[{"name":"wildrydes-app","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
                 - cat imagedefinitions.json
