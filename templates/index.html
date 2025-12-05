@@ -13,21 +13,46 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
         }
+
+        .production-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .production-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-left: 10px;
+            font-size: 12px;
+        }
         
         .container {
             background: white;
             border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             max-width: 800px;
             width: 100%;
             padding: 40px;
+            margin-top: 60px;
         }
         
         .header {
@@ -38,21 +63,33 @@
         .logo {
             font-size: 48px;
             font-weight: bold;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 10px;
         }
+
+        .environment-label {
+            display: inline-block;
+            background: #ff6b6b;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
         
         .tagline {
             color: #666;
             font-size: 18px;
+            margin-top: 10px;
         }
         
         .status-box {
-            background: #f0f4ff;
-            border: 2px solid #667eea;
+            background: #f0f9ff;
+            border: 2px solid #2a5298;
             border-radius: 8px;
             padding: 20px;
             margin-bottom: 30px;
@@ -102,6 +139,7 @@
             border-radius: 8px;
             padding: 20px;
             transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 4px solid #2a5298;
         }
         
         .ride-card:hover {
@@ -125,12 +163,12 @@
         .ride-fare {
             font-size: 20px;
             font-weight: bold;
-            color: #667eea;
+            color: #2a5298;
             margin-top: 15px;
         }
         
         .button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
             border: none;
             padding: 12px 24px;
@@ -167,10 +205,16 @@
     </style>
 </head>
 <body>
+    <div class="production-banner">
+        🚀 AWS PRODUCTION DEPLOYMENT 
+        <span class="production-badge">LIVE ON ECS</span>
+    </div>
+    
     <div class="container">
         <div class="header">
             <div class="logo">🚗 Wild Rydes</div>
-            <div class="tagline">Premium Ride Sharing Service</div>
+            <div class="environment-label">PRODUCTION (AWS ECS)</div>
+            <div class="tagline">Premium Ride Sharing Service - Production Edition</div>
         </div>
         
         <div class="status-box">
