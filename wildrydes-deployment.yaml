@@ -38,6 +38,10 @@ Parameters:
     Type: String
     Default: production
     Description: Environment name
+  NotificationEmail:
+    Type: String
+    Description: Email address to receive deployment notifications
+    Default: 'fadiloderinu@gmail.com'
 
 Resources:
   # VPC and Networking
@@ -478,20 +482,25 @@ Resources:
                 - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME
                 - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
                 - IMAGE_TAG=${COMMIT_HASH:=latest}
+                - echo Repository URI is $REPOSITORY_URI
+                - echo Image TAG is $IMAGE_TAG
+                - ls -la
             build:
               commands:
                 - echo Build started on `date`
                 - echo Building the Docker image...
-                - docker build -t $REPOSITORY_URI:$IMAGE_TAG .
+                - docker build -t $REPOSITORY_URI:$IMAGE_TAG . || (echo "Docker build failed" && exit 1)
                 - docker tag $REPOSITORY_URI:$IMAGE_TAG $REPOSITORY_URI:latest
+                - echo Docker build completed successfully
             post_build:
               commands:
                 - echo Build completed on `date`
                 - echo Pushing the Docker images...
-                - docker push $REPOSITORY_URI:$IMAGE_TAG
-                - docker push $REPOSITORY_URI:latest
+                - docker push $REPOSITORY_URI:$IMAGE_TAG || (echo "Docker push failed" && exit 1)
+                - docker push $REPOSITORY_URI:latest || echo "Warning: Latest tag push failed"
                 - echo Writing image definitions file...
                 - printf '[{"name":"wildrydes-app","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+                - cat imagedefinitions.json
           artifacts:
             files: imagedefinitions.json
 
@@ -627,6 +636,14 @@ Resources:
     Properties:
       TopicName: wildrydes-alerts
       DisplayName: Wild Rydes Deployment Alerts
+
+  # SNS Email Subscription
+  SNSEmailSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Protocol: email
+      TopicArn: !Ref SNSTopic
+      Endpoint: !Ref NotificationEmail
 
 Outputs:
   LoadBalancerDNS:
